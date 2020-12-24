@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-bot = commands.Bot("!duel ")
+bot = commands.Bot(command_prefix="!duel ")
 
 
 @bot.event
@@ -19,7 +19,6 @@ async def on_ready():
 
 duel = None
 challenges = []
-
 
 @bot.command()
 async def challenge(ctx: discord.ext.commands.Context,
@@ -40,9 +39,10 @@ async def accept(ctx: discord.ext.commands.Context, challenger: discord.Member):
                       "with \"!duel fire\". The first gunslinger to fire their "
                       "pistol will win, and the other gunslinger... well, "
                       "they'll be on their way to meet their maker. Understand?"
-                      "\n\nNow, " + ctx.author.nick + ", " + challenger.nick +
-                      ", if you will, please send the message \"!duel ready\" "
-                      "when you're ready, and the countdown will begin.")
+                      "\n\nNow, " + ctx.author.display_name + ", " +
+                      challenger.display_name +", if you will, please send the "
+                      "message \"!duel ready\" when you're ready, and the "
+                      "countdown will begin.")
 
     nonexistent_message = ("Are you drunk, partner? " + challenger.nick +
                            " never challenged you to a duel.")
@@ -55,17 +55,5 @@ async def accept(ctx: discord.ext.commands.Context, challenger: discord.Member):
             return
 
     ctx.channel.send(nonexistent_message)
-
-
-def get_challenge(message: discord.Member) -> Union[discord.Member, None]:
-    if message.content.startswith("!duel @"):
-
-        challenged_user = None
-        if len(message.mentions) == 1:
-            challenged_user = message.mentions[0]
-
-        if (challenged_user is not None
-                and challenged_user.name == message.content[7:]):
-            return challenged_user
 
 bot.run(TOKEN)
