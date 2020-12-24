@@ -180,10 +180,10 @@ class Duel:
         gunslinger = self._get_gunslinger(member)
         if gunslinger is not None:
             gunslinger.ready_up()
-            self._try_begin()
+            self.try_begin()
 
 
-    def _try_begin(self) -> None:
+    def try_begin(self) -> None:
         """
         Attempts to begin the duel and make it active. If both gunslingers are
         ready to duel, then the duel will begin. Otherwise, it will stay
@@ -199,6 +199,7 @@ class Duel:
                       "duel. May the fastest gunslinger win!"
             self.channel.send(message)
 
+            await asyncio.sleep(3)
             self._countdown()
             self.active = True
 
@@ -291,17 +292,12 @@ class Duel:
     async def _countdown(self):
 
         await self.channel.send("Three!")
-        await self._get_random_delay()
+        await asyncio.sleep(1)
         await self.channel.send("Two!")
-        await self._get_random_delay()
+        await asyncio.sleep(1)
         await self.channel.send("One!")
-        await self._get_random_delay()
+        await asyncio.sleep(1)
         await self.channel.send("Draw!")
-
-    async def _get_random_delay(self):
-
-        delay = random.randint(0, 50) / 10
-        await asyncio.sleep(delay)
 
     def _get_gunslinger(self, member: discord.Member) -> Gunslinger:
         """

@@ -19,12 +19,19 @@ async def on_ready():
 
 duel = None
 challenges = []
+current_duel = None
 
 @bot.command()
 async def challenge(ctx: discord.ext.commands.Context,
                     challengee: discord.Member):
 
-    # TODO: Check if the challengee has already challenged the challenger
+    for challenge in challenges:
+        if challenge.get_challenger() == challengee \
+            and challenge.get_challengee() == ctx.author:
+
+            message = ("Are you dumb, friend? " + challengee + "'s already "
+                       "challenged you to a duel.")
+            await ctx.channel.send(message)
 
     challenges.append(Challenge(ctx.author, challengee))
 
@@ -44,16 +51,33 @@ async def accept(ctx: discord.ext.commands.Context, challenger: discord.Member):
                       "message \"!duel ready\" when you're ready, and the "
                       "countdown will begin.")
 
-    nonexistent_message = ("Are you drunk, partner? " + challenger.nick +
-                           " never challenged you to a duel.")
+    nonexistent_message = ("Are you drunk, partner? " +
+                           challenger.display_name + " never challenged you to "
+                           "a duel.")
 
     for challenge in challenges:
 
         if challenge.get_challenger() == challenger \
                 and challenge.get_challengee() == ctx.author:
-            ctx.channel.send(accept_message)
+
+            await ctx.channel.send(accept_message)
+            current_duel = Duel(ctx.author, challenger)
+
             return
 
-    ctx.channel.send(nonexistent_message)
+    await ctx.channel.send(nonexistent_message)
+
+@bot.command()
+async def ready(ctx):
+
+    if current_duel is None:
+
+        message = ("Hold your horses there, trigger finger! There ain't no"
+                   "no duel goin' on. You need to sober up friend.")
+        await ctx.channel.send(message)
+        return
+
+    current_duel.ready_up_gunslinger(ctx.author)
+    current_duel.try_begin()
 
 bot.run(TOKEN)
