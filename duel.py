@@ -1,7 +1,9 @@
+from __future__ import annotations
 import discord
 from typing import Tuple
 import random
 import asyncio
+import datetime
 
 class Gunslinger:
     """
@@ -13,7 +15,7 @@ class Gunslinger:
     ==========
 
     member: discord.Member
-        the discord.Member that controlls the gunslinger
+        the discord.Member that controls the gunslinger
     ready:
         True if the gunslinger is ready to duel. False otherwise
     drawn:
@@ -91,6 +93,47 @@ class Gunslinger:
         return self.member == member
 
 
+class Challenge:
+    """
+    This class represents a challenge that one gunslinger made to another. Each
+    challenge contains the time that it was issued, as well as the two members
+    involved.
+
+    Attributes
+    ==========
+
+    challenger:
+        the member that issued the challenge
+    challengee:
+        the member that was challenged
+    time:
+        the time that the challenge was issued
+    """
+
+    def __init__(self, challenger: discord.Member, challengee: discord.Member):
+
+        self.challenger = challenger
+        self.challengee = challengee
+        self.time = datetime.datetime.now()
+
+    def get_challenger(self) -> discord.Member:
+        return self.challenger
+
+    def get_challengee(self) -> discord.Member:
+        return self.challengee
+
+    def get_time(self) -> datetime.datetime:
+        return self.time
+
+    def __eq__(self, other: Challenge) -> bool:
+
+        if not isinstance(other, Challenge):
+            return NotImplemented
+
+        return self.challenger == other.challenger \
+               and self.challengee == other.challengee
+
+
 class Duel:
     """
     This class represents a duel between two gunslingers. Both gunslingers
@@ -101,10 +144,6 @@ class Duel:
     Attributes
     ==========
 
-    member1:
-        One of the members that control one of the gunslingers in the duel
-    member2:
-        The other member that controls the other gunslinger in the duel
     gunslinger1:
         One of the gunslingers engaged in the duel
     gunslinger2:
@@ -123,13 +162,6 @@ class Duel:
                  member2: discord.Member,
                  channel: discord.channel.TextChannel):
 
-        '''
-        self.member1 = member1
-        self.member2 = member2
-        self.gunslinger1 = Gunslinger(member1)
-        self.gunslinger2 = Gunslinger(member2)
-        '''
-        self.members = (member1, member2)
         self.gunslingers = (Gunslinger(member1), Gunslinger(member2))
 
         self.channel = channel
@@ -243,7 +275,7 @@ class Duel:
                         "straight through the forehead.",
                         "to the forehead.",
                         "right through the forehead.",
-                        "straight through the neck! Hell, that's bad.",
+                        "straight through the neck!",
                         "through the nose."]
 
         result = random.randint(0, 100)
@@ -293,7 +325,8 @@ class Duel:
         duel
         """
 
-        return self.members
+        return (self.gunslingers[0].get_member(),
+                self.gunslingers[1].get_member())
 
     def is_over(self) -> bool:
         """
