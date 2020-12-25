@@ -25,20 +25,18 @@ current_duel = None
 async def challenge(ctx: discord.ext.commands.Context,
                     challengee: discord.Member):
 
-    print('INSIDE FUNCTION')
-
     for challenge in challenges:
         if challenge.get_challenger() == challengee \
             and challenge.get_challengee() == ctx.author:
 
-            message = ("Are you dumb, friend? " + challengee + "'s already "
-                       "challenged you to a duel.")
+            message = ("Are you dumb, friend? " + challengee.display_name +
+                       "'s already challenged you to a duel.")
             await ctx.channel.send(message)
 
     challenges.append(Challenge(ctx.author, challengee))
 
     message = ("It appears " + ctx.author.display_name + " has challenged "
-               + challengee.display_name + " to a good ol’ fashion duel!\n"
+               + challengee.display_name + " to a good ol' fashion duel!\n"
                + challengee.display_name + ", reply with \"!duel accept "
                "@" + ctx.author.display_name + "\" to accept the challenge.")
 
