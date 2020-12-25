@@ -86,6 +86,29 @@ async def ready(ctx):
         await ctx.channel.send(message)
         return
 
-    await current_duel.ready_up_gunslinger(ctx.author)
+    if current_duel.has_member(ctx.author):
+        await current_duel.ready_up_gunslinger(ctx.author)
+
+@bot.command
+async def draw(ctx):
+
+    if current_duel is None:
+
+        message = ("Put that gun back in your holster you no good maggot! "
+                   "There ain't no duel goin' on! Are you *tryin'* to upset the "
+                   "peace of this good server?")
+
+        await ctx.channel.send(message)
+        return
+
+    if (not current_duel.is_active()) \
+            and current_duel.has_member(ctx.author):
+
+        message = ("Easy there, cowpoke. It ain't time for you to draw yet.")
+        await ctx.channel.send(message)
+        return
+
+    if current_duel.has_member(ctx.author):
+        current_duel.draw(ctx.author)
 
 bot.run(TOKEN)

@@ -324,6 +324,12 @@ class Duel:
         return (self.gunslingers[0].get_member(),
                 self.gunslingers[1].get_member())
 
+    def is_active(self):
+        return self.active
+
+    def has_member(self, member: discord.Member):
+        return member in self.get_members()
+
     def is_over(self) -> bool:
         """
         Indicates whether or not the duel is over
