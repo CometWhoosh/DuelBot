@@ -180,10 +180,10 @@ class Duel:
         gunslinger = self._get_gunslinger(member)
         if gunslinger is not None:
             gunslinger.ready_up()
-            self.try_begin()
+            self.__try_begin()
 
 
-    def try_begin(self) -> None:
+    async def _try_begin(self) -> None:
         """
         Attempts to begin the duel and make it active. If both gunslingers are
         ready to duel, then the duel will begin. Otherwise, it will stay
@@ -197,10 +197,10 @@ class Duel:
             self.ready = True
             message = "Alright everybody! It seems both parties are ready to" \
                       "duel. May the fastest gunslinger win!"
-            self.channel.send(message)
+            await self.channel.send(message)
 
             await asyncio.sleep(3)
-            self._countdown()
+            await self._countdown()
             self.active = True
 
 

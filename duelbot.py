@@ -78,6 +78,5 @@ async def ready(ctx):
         return
 
     current_duel.ready_up_gunslinger(ctx.author)
-    current_duel.try_begin()
 
 bot.run(TOKEN)
