@@ -71,6 +71,7 @@ async def accept(ctx: discord.ext.commands.Context, challenger: discord.Member):
 
             await ctx.channel.send(accept_message)
             current_duel = Duel(ctx.author, challenger, ctx.channel)
+            challenges.remove(challenge)
 
             return
 
@@ -110,5 +111,31 @@ async def draw(ctx):
 
     if current_duel.has_member(ctx.author):
         current_duel.draw(ctx.author)
+
+@bot.command()
+async def fire(ctx):
+
+    global current_duel
+
+    if current_duel is None:
+
+        message = ("The hell are you tryin' to do!? There ain't no duel "
+                   "goin' on! You try and fire your gun like that again and "
+                   "you'll be spendin' time in a cell you hear!?")
+        await ctx.channel.send(message)
+        return
+
+    if (not current_duel.is_active()) \
+            and current_duel.has_member(ctx.author):
+
+        message = ("Woah there! Take it easy. It ain't time for you fire yet.")
+        await ctx.channel.send(message)
+        return
+
+    if current_duel.has_member(ctx.author):
+        current_duel.fire(ctx.author)
+
+    if current_duel.is_over():
+        current_duel = None
 
 bot.run(TOKEN)
