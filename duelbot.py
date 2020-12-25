@@ -44,6 +44,9 @@ async def challenge(ctx: discord.ext.commands.Context,
 
 @bot.command()
 async def accept(ctx: discord.ext.commands.Context, challenger: discord.Member):
+
+    global current_duel
+
     challenge_exists = False
     accept_message = ("Well alright then. A duel it is.\n\nNow here's how "
                       "this’ll work. I’m gonna countdown by sayin’ \"One! Two! "
@@ -79,10 +82,10 @@ async def ready(ctx):
     if current_duel is None:
 
         message = ("Hold your horses there, trigger finger! There ain't no"
-                   "no duel goin' on. You need to sober up friend.")
+                   "duel goin' on.")
         await ctx.channel.send(message)
         return
 
-    current_duel.ready_up_gunslinger(ctx.author)
+    await current_duel.ready_up_gunslinger(ctx.author)
 
 bot.run(TOKEN)

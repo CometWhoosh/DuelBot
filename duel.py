@@ -169,7 +169,7 @@ class Duel:
         self.active = False
         self.over = False
 
-    def ready_up_gunslinger(self, member: discord.Member) -> None:
+    async def ready_up_gunslinger(self, member: discord.Member) -> None:
         """
         Makes the gunslinger associated with 'member' ready to
         duel.
@@ -180,7 +180,7 @@ class Duel:
         gunslinger = self._get_gunslinger(member)
         if gunslinger is not None:
             gunslinger.ready_up()
-            self.__try_begin()
+            await self._try_begin()
 
 
     async def _try_begin(self) -> None:
@@ -195,7 +195,7 @@ class Duel:
                 and not self.active):
 
             self.ready = True
-            message = "Alright everybody! It seems both parties are ready to" \
+            message = "Alright everybody! It seems both parties are ready to " \
                       "duel. May the fastest gunslinger win!"
             await self.channel.send(message)
 
