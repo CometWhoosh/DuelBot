@@ -96,8 +96,8 @@ async def draw(ctx):
     if current_duel is None:
 
         message = ("Put that gun back in your holster you no good maggot! "
-                   "There ain't no duel goin' on! Are you *tryin'* to upset the "
-                   "peace of this good server?")
+                   "There ain't no duel goin' on! Are you *tryin'* to upset "
+                   "the peace of this good server?")
 
         await ctx.channel.send(message)
         return
@@ -118,11 +118,6 @@ async def fire(ctx):
     global current_duel
 
     if current_duel is None:
-
-        message = ("The hell are you tryin' to do!? There ain't no duel "
-                   "goin' on! You try and fire your gun like that again and "
-                   "you'll be spendin' time in a cell you hear!?")
-        await ctx.channel.send(message)
         return
 
     if (not current_duel.is_active()) \

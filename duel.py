@@ -242,12 +242,13 @@ class Duel:
 
                 dead_gunslinger.die()
 
-                message = "Heavens! " + member.name + " killed " + \
-                          dead_gunslinger.get_member().name + "with a shot " + \
-                          self._get_killing_method() + "\n \n Well, there " \
-                                                       "you have it folks. A gunslinger's duel. \n \n " \
-                                                       "Now, c'mon, show's over. There ain't nothin' to " \
-                                                       "see here. Get on with yer business."
+                message = ("Heaves! " + member.name + " killed "
+                           + dead_gunslinger.get_member().display_name
+                           + " with a shot " + self._get_killing_method()
+                           + "\n\n Well, there you have it folks. A "
+                           "gunslinger's duel. Now, c'mon, show's over. There "
+                           "ain't nothin' to see here. Get on with yer "
+                           "business")
 
                 await self.channel.send(message)
                 self.ready = False
