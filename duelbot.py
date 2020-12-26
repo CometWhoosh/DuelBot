@@ -69,8 +69,8 @@ async def challenge(ctx: discord.ext.commands.Context,
 
     message = ("It appears " + ctx.author.display_name + " has challenged "
                + challengee.display_name + " to a good ol' fashioned duel!\n"
-               + challengee.display_name + ", reply with \"!duel accept "
-               "@" + ctx.author.display_name + "\" to accept the challenge.")
+               + challengee.display_name + ", reply with \"!duel accept " +
+               ctx.author.display_name + "\" to accept the challenge.")
 
     await ctx.channel.send(message)
 
@@ -233,7 +233,7 @@ async def check_expirations():
             for challenge in challenges:
                 print("AAAA")
                 if seconds_between(datetime.datetime.now(),
-                                   challenge.get_start_time()) >= 27:
+                                   challenge.get_start_time()) >= 40:
 
                     challenge_message = ("Well, " +
                                          challenge.get_challenger().mention +
