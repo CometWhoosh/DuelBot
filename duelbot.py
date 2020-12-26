@@ -48,6 +48,7 @@ async def accept(ctx: discord.ext.commands.Context, challenger: discord.Member):
     global current_duel
 
     challenge_exists = False
+
     accept_message = ("Well alright then. A duel it is.\n\nNow here's how "
                       "this’ll work. I’m gonna countdown by sayin’ \"One! Two! "
                       "Three! Draw!\"\n\nThen, each gunslinger will draw their "
@@ -76,6 +77,25 @@ async def accept(ctx: discord.ext.commands.Context, challenger: discord.Member):
             return
 
     await ctx.channel.send(nonexistent_message)
+
+@bot.command()
+async def decline(ctx, challenger: discord.Member):
+
+    decline_message = (challenger.display_name + " declined the offer.\n Well, "
+                       "at least we won't have to deal with the mess that "
+                       "comes afterwards.")
+    nonexistent_message = ("Uhh... " + challenger.display_name + " never "
+                           "challenged you to a duel. Are you okay, friend?")
+
+    for challenge in challenges:
+
+        if challenge.get_challenger() == challenger \
+                and challenge.get_challengee() == ctx.author:
+
+            await ctx.channel.send(decline_message)
+            challenges.remove(challenge)
+
+    await ctx.send.channel(nonexistent_message)
 
 @bot.command()
 async def ready(ctx):
