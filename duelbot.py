@@ -13,6 +13,11 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 bot = commands.Bot(command_prefix="!duel ")
 
+duel_expiration_message = ("What the hell are you two doin'? Do you even plan "
+                           "on killin' each other, or are you just gonna stand "
+                           "there like some yellow bellied cowards? Please, "
+                           "don't waste this server's time.\n\nSorry folks, "
+                           "the duel's off.")
 
 @bot.event
 async def on_ready():
@@ -28,6 +33,12 @@ current_duel = None
 async def challenge(ctx: discord.ext.commands.Context,
                     challengee: discord.Member):
 
+    if current_duel is not None:
+
+        message = "Hold it, cowpoke. There's already a duel goin' on."
+        await ctx.channel.send(message)
+        return
+
     for challenge in challenges:
         if challenge.get_challenger() == challengee \
             and challenge.get_challengee() == ctx.author:
@@ -35,11 +46,12 @@ async def challenge(ctx: discord.ext.commands.Context,
             message = ("Are you dumb, friend? " + challengee.display_name +
                        "'s already challenged you to a duel.")
             await ctx.channel.send(message)
+            return
 
     challenges.append(Challenge(ctx.author, challengee, ctx.channel))
 
     message = ("It appears " + ctx.author.display_name + " has challenged "
-               + challengee.display_name + " to a good ol' fashion duel!\n"
+               + challengee.display_name + " to a good ol' fashioned duel!\n"
                + challengee.display_name + ", reply with \"!duel accept "
                "@" + ctx.author.display_name + "\" to accept the challenge.")
 
@@ -49,6 +61,12 @@ async def challenge(ctx: discord.ext.commands.Context,
 async def accept(ctx: discord.ext.commands.Context, challenger: discord.Member):
 
     global current_duel
+
+    if (current_duel is not None) and (not current_duel.has_member(ctx.author)):
+
+        message = "Quiet down! Can't you see there's a duel goin' on?"
+        await ctx.channel.send(message)
+        return
 
     challenge_exists = False
 
@@ -84,6 +102,12 @@ async def accept(ctx: discord.ext.commands.Context, challenger: discord.Member):
 @bot.command()
 async def decline(ctx, challenger: discord.Member):
 
+    if current_duel is not None:
+
+        message = "Would you quiet down? There's a duel goin' on."
+        await ctx.channel.send(message)
+        return
+
     decline_message = (challenger.display_name + " declined the offer.\n Well, "
                        "at least we won't have to deal with the mess that "
                        "comes afterwards.")
@@ -110,8 +134,12 @@ async def ready(ctx):
         await ctx.channel.send(message)
         return
 
-    if current_duel.has_member(ctx.author):
-        await current_duel.ready_up_gunslinger(ctx.author)
+    if not current_duel.has_member(ctx.author):
+        message = "Ready? You ain't part of this duel, friend!"
+        await ctx.channel.send(message)
+        return
+
+    await current_duel.ready_up_gunslinger(ctx.author)
 
 @bot.command()
 async def draw(ctx):
@@ -132,13 +160,20 @@ async def draw(ctx):
         await ctx.channel.send(message)
         return
 
-    if current_duel.has_member(ctx.author):
-        current_duel.draw(ctx.author)
+    if not current_duel.has_member(ctx.author):
+
+        message = ("Put that gun away you no good maggot! You ain't part of "
+                   "this duel!")
+        await ctx.channel.send(message)
+        return
+
+    current_duel.draw(ctx.author)
 
 @bot.command()
 async def fire(ctx):
 
     global current_duel
+
 
     if current_duel is None:
         return
@@ -150,23 +185,24 @@ async def fire(ctx):
         await ctx.channel.send(message)
         return
 
-    if current_duel.has_member(ctx.author):
-        await current_duel.fire(ctx.author)
+    if not current_duel.has_member(ctx.author):
+
+        message = ("What in the hell are you thinkin'!? You ain't a part of "
+                   "this duel!")
+        await ctx.channel.send(message)
+        return
+
+    await current_duel.fire(ctx.author)
 
     if current_duel.is_over():
         current_duel = None
-
-duel_expiration_message = ("What the hell are you two doin'? Do you even plan "
-                           "on killin' each other, or are you just gonna stand "
-                           "there like some yellow bellied cowards? Please, "
-                           "don't waste this server's time.\n\nSorry folks, "
-                           "the duel's off.")
 
 async def check_expirations():
 
     global current_duel
 
     while True:
+
         if current_duel is not None:
 
             if seconds_between(datetime.datetime.now(),
@@ -175,26 +211,27 @@ async def check_expirations():
                 await current_duel.get_channel().send(duel_expiration_message)
                 current_duel = None
 
-        for challenge in challenges:
-            print("AAAA")
-            if seconds_between(datetime.datetime.now(),
-                               challenge.get_start_time()) >= 20:
+        else:
 
-                challenge_message = ("Well, " +
-                                     challenge.get_challenger().mention +
-                                     " it seems like " +
-                                     challenge.get_challengee().display_name +
-                                     " didn't respond. Sorry friend, we're "
-                                     "calling off the challenge.")
+            for challenge in challenges:
+                print("AAAA")
+                if seconds_between(datetime.datetime.now(),
+                                   challenge.get_start_time()) >= 20:
 
-                await challenge.get_channel().send(challenge_message)
-                challenges.remove(challenge)
+                    challenge_message = ("Well, " +
+                                         challenge.get_challenger().mention +
+                                         " it seems like " +
+                                         challenge.get_challengee().display_name
+                                         + " didn't respond. Sorry friend, but "
+                                         "we're calling off the challenge.")
+
+                    await challenge.get_channel().send(challenge_message)
+                    challenges.remove(challenge)
 
         await asyncio.sleep(20)
 
 
 def seconds_between(end: datetime.datetime, start: datetime.datetime):
-
     return (end - start).seconds
 
 
