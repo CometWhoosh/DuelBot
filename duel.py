@@ -103,18 +103,22 @@ class Challenge:
     ==========
 
     challenger:
-        the member that issued the challenge
+        The member that issued the challenge
     challengee:
-        the member that was challenged
+        The member that was challenged
+    channel:
+        The channel that this challenge was issued in
     time:
-        the time that the challenge was issued
+        The time that the challenge was issued
     """
 
-    def __init__(self, challenger: discord.Member, challengee: discord.Member):
+    def __init__(self, challenger: discord.Member, challengee: discord.Member,
+                 channel: discord.TextChannel):
 
         self.challenger = challenger
         self.challengee = challengee
-        self.time = datetime.datetime.now()
+        self.channel = channel
+        self.start_time = datetime.datetime.now()
 
     def get_challenger(self) -> discord.Member:
         return self.challenger
@@ -122,8 +126,11 @@ class Challenge:
     def get_challengee(self) -> discord.Member:
         return self.challengee
 
-    def get_time(self) -> datetime.datetime:
-        return self.time
+    def get_channel(self):
+        return self.channel
+
+    def get_start_time(self) -> datetime.datetime:
+        return self.start_time
 
     def __eq__(self, other: Challenge) -> bool:
 
@@ -156,6 +163,8 @@ class Duel:
         True if the countdown has finished, or False otherwise
     over:
         True if the duel is over, or False otherwise
+    time:
+        The time that the duel was created
     """
 
     def __init__(self, member1: discord.Member,
@@ -168,6 +177,7 @@ class Duel:
         self.ready = False
         self.active = False
         self.over = False
+        self.start_time = datetime.datetime.now()
 
     async def ready_up_gunslinger(self, member: discord.Member) -> None:
         """
@@ -326,6 +336,9 @@ class Duel:
         return (self.gunslingers[0].get_member(),
                 self.gunslingers[1].get_member())
 
+    def get_channel(self):
+        return self.channel
+
     def is_active(self):
         return self.active
 
@@ -338,3 +351,6 @@ class Duel:
         :return: True if the duel is over, or False otherwise.
         """
         return self.over
+
+    def get_start_time(self):
+        return self.start_time

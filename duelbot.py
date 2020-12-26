@@ -5,6 +5,8 @@ from duel import Duel
 from duel import Challenge
 from discord.ext import commands
 from dotenv import load_dotenv
+import datetime
+import asyncio
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -15,6 +17,7 @@ bot = commands.Bot(command_prefix="!duel ")
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
+    await check_expirations()
 
 
 duel = None
@@ -33,7 +36,7 @@ async def challenge(ctx: discord.ext.commands.Context,
                        "'s already challenged you to a duel.")
             await ctx.channel.send(message)
 
-    challenges.append(Challenge(ctx.author, challengee))
+    challenges.append(Challenge(ctx.author, challengee, ctx.channel))
 
     message = ("It appears " + ctx.author.display_name + " has challenged "
                + challengee.display_name + " to a good ol' fashion duel!\n"
@@ -152,5 +155,51 @@ async def fire(ctx):
 
     if current_duel.is_over():
         current_duel = None
+
+duel_expiration_message = ("What the hell are you two doin'? Do you even plan "
+                           "on killin' each other, or are you just gonna stand "
+                           "there like some yellow bellied cowards? Please, "
+                           "don't waste this server's time.\n\nSorry folks, "
+                           "the duel's off.")
+
+async def check_expirations():
+
+    global current_duel
+
+    while True:
+        if current_duel is not None:
+
+            if seconds_between(datetime.datetime.now(),
+                               current_duel.get_start_time()) >= 90:
+
+                await current_duel.get_channel().send(duel_expiration_message)
+                current_duel = None
+
+        for challenge in challenges:
+            print("AAAA")
+            if seconds_between(datetime.datetime.now(),
+                               challenge.get_start_time()) >= 20:
+
+                challenge_message = ("Well, " +
+                                     challenge.get_challenger().mention +
+                                     " it seems like " +
+                                     challenge.get_challengee().display_name +
+                                     " didn't respond. Sorry friend, we're "
+                                     "calling off the challenge.")
+
+                await challenge.get_channel().send(challenge_message)
+                challenges.remove(challenge)
+
+        await asyncio.sleep(20)
+
+
+def seconds_between(end: datetime.datetime, start: datetime.datetime):
+
+    return (end - start).seconds
+
+
+
+
+
 
 bot.run(TOKEN)
