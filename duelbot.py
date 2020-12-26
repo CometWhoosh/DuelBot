@@ -90,7 +90,7 @@ async def ready(ctx):
     if current_duel.has_member(ctx.author):
         await current_duel.ready_up_gunslinger(ctx.author)
 
-@bot.command
+@bot.command()
 async def draw(ctx):
 
     if current_duel is None:

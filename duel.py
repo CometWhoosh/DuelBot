@@ -215,6 +215,7 @@ class Duel:
         gunslinger = self._get_gunslinger(member)
 
         if gunslinger is not None and gunslinger.is_alive() and self.active:
+
             gunslinger.draw()
 
     def fire(self, member: discord.Member) -> None:
@@ -246,7 +247,7 @@ class Duel:
                           self._get_killing_method() + "\n \n Well, there " \
                                                        "you have it folks. A gunslinger's duel. \n \n " \
                                                        "Now, c'mon, show's over. There ain't nothin' to " \
-                                                       "see here. Get on with your business."
+                                                       "see here. Get on with yer business."
 
                 self.channel.send(message)
                 self.ready = False
