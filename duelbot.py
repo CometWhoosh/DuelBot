@@ -133,7 +133,7 @@ async def fire(ctx):
         return
 
     if current_duel.has_member(ctx.author):
-        current_duel.fire(ctx.author)
+        await current_duel.fire(ctx.author)
 
     if current_duel.is_over():
         current_duel = None

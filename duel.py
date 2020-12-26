@@ -218,7 +218,7 @@ class Duel:
 
             gunslinger.draw()
 
-    def fire(self, member: discord.Member) -> None:
+    async def fire(self, member: discord.Member) -> None:
         """
         Makes the gunslinger associated with 'member' fire their gun
 
@@ -249,7 +249,7 @@ class Duel:
                                                        "Now, c'mon, show's over. There ain't nothin' to " \
                                                        "see here. Get on with yer business."
 
-                self.channel.send(message)
+                await self.channel.send(message)
                 self.ready = False
                 self.active = False
                 self.over = True
