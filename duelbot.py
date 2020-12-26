@@ -39,6 +39,13 @@ async def challenge(ctx: discord.ext.commands.Context,
         await ctx.channel.send(message)
         return
 
+    if challengee == ctx.author:
+
+        message = ("You're challenging... yourself? You need to put down "
+                   "the liquor, friend.")
+        await ctx.channel.send(message)
+        return
+
     for challenge in challenges:
 
         if challenge.get_challenger() == challengee \
