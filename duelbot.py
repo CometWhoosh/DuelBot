@@ -19,8 +19,9 @@ duel_expiration_message = ("What the hell are you two doin'? Do you even plan "
                            "don't waste this server's time.\n\nSorry folks, "
                            "the duel's off.")
 
+
 @bot.event
-async def on_ready():
+async def on_ready() -> None:
     print(f'{bot.user} has connected to Discord!')
     await check_expirations()
 
@@ -31,7 +32,7 @@ current_duel = None
 
 @bot.command()
 async def challenge(ctx: discord.ext.commands.Context,
-                    challengee: discord.Member):
+                    challengee: discord.Member) -> None:
 
     if current_duel is not None:
 
@@ -75,7 +76,8 @@ async def challenge(ctx: discord.ext.commands.Context,
     await ctx.channel.send(message)
 
 @bot.command()
-async def accept(ctx: discord.ext.commands.Context, challenger: discord.Member):
+async def accept(ctx: discord.ext.commands.Context,
+                 challenger: discord.Member) -> None:
 
     global current_duel
 
@@ -117,7 +119,8 @@ async def accept(ctx: discord.ext.commands.Context, challenger: discord.Member):
     await ctx.channel.send(nonexistent_message)
 
 @bot.command()
-async def decline(ctx, challenger: discord.Member):
+async def decline(ctx: discord.ext.commands.Context,
+                  challenger: discord.Member) -> None:
 
     if current_duel is not None:
 
@@ -142,7 +145,7 @@ async def decline(ctx, challenger: discord.Member):
     await ctx.channel.send(nonexistent_message)
 
 @bot.command()
-async def ready(ctx):
+async def ready(ctx: discord.ext.commands.Context) -> None:
 
     if current_duel is None:
 
@@ -159,7 +162,7 @@ async def ready(ctx):
     await current_duel.ready_up_gunslinger(ctx.author)
 
 @bot.command()
-async def draw(ctx):
+async def draw(ctx: discord.ext.commands.Context) -> None:
 
     if current_duel is None:
 
@@ -187,10 +190,9 @@ async def draw(ctx):
     current_duel.draw(ctx.author)
 
 @bot.command()
-async def fire(ctx):
+async def fire(ctx: discord.ext.commands.Context) -> None:
 
     global current_duel
-
 
     if current_duel is None:
         return
@@ -214,7 +216,8 @@ async def fire(ctx):
     if current_duel.is_over():
         current_duel = None
 
-async def check_expirations():
+
+async def check_expirations() -> None:
 
     global current_duel
 
@@ -248,7 +251,7 @@ async def check_expirations():
         await asyncio.sleep(20)
 
 
-def seconds_between(end: datetime.datetime, start: datetime.datetime):
+def seconds_between(end: datetime.datetime, start: datetime.datetime) -> int:
     return (end - start).seconds
 
 
