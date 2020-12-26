@@ -40,11 +40,21 @@ async def challenge(ctx: discord.ext.commands.Context,
         return
 
     for challenge in challenges:
+
         if challenge.get_challenger() == challengee \
             and challenge.get_challengee() == ctx.author:
 
             message = ("Are you dumb, friend? " + challengee.display_name +
                        "'s already challenged you to a duel.")
+            await ctx.channel.send(message)
+            return
+
+        if challenge.get_challenger() == ctx.author \
+            and challenge.get_challengee() == challengee:
+
+            message = ("Patience is a virtue that has obviously been lost on "
+                       "you, partner. You've already challenged " +
+                       challengee.display_name + ". Settle down.")
             await ctx.channel.send(message)
             return
 
@@ -216,7 +226,7 @@ async def check_expirations():
             for challenge in challenges:
                 print("AAAA")
                 if seconds_between(datetime.datetime.now(),
-                                   challenge.get_start_time()) >= 20:
+                                   challenge.get_start_time()) >= 27:
 
                     challenge_message = ("Well, " +
                                          challenge.get_challenger().mention +
