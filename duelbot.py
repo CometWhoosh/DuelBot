@@ -129,8 +129,8 @@ async def ready(ctx):
 
     if current_duel is None:
 
-        message = ("Hold your horses there, trigger finger! There ain't no"
-                   "duel goin' on.")
+        message = ("Haha! I like your enthusiasm partner, but in case you "
+                   "can't see, there ain't any duels going on.")
         await ctx.channel.send(message)
         return
 
@@ -233,10 +233,6 @@ async def check_expirations():
 
 def seconds_between(end: datetime.datetime, start: datetime.datetime):
     return (end - start).seconds
-
-
-
-
 
 
 bot.run(TOKEN)

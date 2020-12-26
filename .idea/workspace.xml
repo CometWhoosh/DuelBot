@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8881062c-17c1-464c-8d5a-3d9093095bba" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/duelbot.py" beforeDir="false" afterPath="$PROJECT_DIR$/duelbot.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
