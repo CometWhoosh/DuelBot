@@ -5,6 +5,7 @@ import random
 import asyncio
 import datetime
 
+
 class Gunslinger:
     """
     This class represents a gunslinger who is dueling another gunslinger.
@@ -15,7 +16,7 @@ class Gunslinger:
     ==========
 
     member: discord.Member
-        the discord.Member that controls the gunslinger
+        the discord member that controls the gunslinger
     ready:
         True if the gunslinger is ready to duel. False otherwise
     drawn:
@@ -59,37 +60,54 @@ class Gunslinger:
         self.alive = False
 
     def get_member(self) -> discord.Member:
+        """
+        Returns the discord member that is associated with this gunslinger.
+
+        :return: The discord member associated with this gunslinger.
+        """
         return self.member
 
     def is_ready(self) -> bool:
         """
-        Indicates whether or not the gunslinger is ready to duel
+        Indicates whether or not the gunslinger is ready to duel.
+
         :return: True if the gunslinger is ready, or False otherwise.
         """
         return self.ready
 
     def has_drawn(self) -> bool:
         """
-        Indicates whether or not the gunslinger has drawn their gun
+        Indicates whether or not the gunslinger has drawn their gun.
+
         :return: True if the gunslinger has drawn, or False otherwise.
         """
         return self.drawn
 
     def has_fired(self) -> bool:
         """
-        Indicates whether or not the gunslinger has fired their gun
+        Indicates whether or not the gunslinger has fired their gun.
+
         :return: True if the gunslinger has fired, or False otherwise.
         """
         return self.fired
 
     def is_alive(self) -> bool:
         """
-        Indicates whether or not the gunslinger is dead
+        Indicates whether or not the gunslinger is dead.
+
         :return: True if the gunslinger is dead, or False otherwise.
         """
         return self.alive
 
     def is_member(self, member: discord.Member) -> bool:
+        """
+        Indicates whether or not the gunslinger is associated with the given
+        discord member.
+
+        :param member: the discord member to check with.
+        :return: True if the gunslinger is associated with the given discord
+                 member, or False otherwise.
+        """
         return self.member == member
 
 
@@ -107,13 +125,13 @@ class Challenge:
     challengee:
         The member that was challenged
     channel:
-        The channel that this challenge was issued in
+        The discord channel that this challenge was issued in
     time:
         The time that the challenge was issued
     """
 
     def __init__(self, challenger: discord.Member, challengee: discord.Member,
-                 channel: discord.TextChannel):
+                 channel: discord.channel.TextChannel):
 
         self.challenger = challenger
         self.challengee = challengee
@@ -121,40 +139,51 @@ class Challenge:
         self.start_time = datetime.datetime.now()
 
     def get_challenger(self) -> discord.Member:
+        """
+        Returns the discord member who issued the challenge.
+
+        :return: the discord member who issued the challenge.
+        """
+
         return self.challenger
 
     def get_challengee(self) -> discord.Member:
+        """
+        Returns the discord member who was challenged.
+
+        :return: the discord member who was challenged.
+        """
         return self.challengee
 
-    def get_channel(self):
+    def get_channel(self) -> discord.channel.TextChannel:
+        """
+        Returns the discord channel that this challenge was issued in.
+
+        :return: the discord channel that this challenge was issued in
+        """
         return self.channel
 
     def get_start_time(self) -> datetime.datetime:
+        """
+        Returns the time that this challenge was created.
+
+        :return: the time that this challenge was created
+        """
         return self.start_time
-
-    def __eq__(self, other: Challenge) -> bool:
-
-        if not isinstance(other, Challenge):
-            return NotImplemented
-
-        return self.challenger == other.challenger \
-               and self.challengee == other.challengee
 
 
 class Duel:
     """
     This class represents a duel between two gunslingers. Both gunslingers
     must be ready before the duel can begin. To kill their opponent, a
-    gunslinger must draw and fire their gun. The first gunslinger to fire their
+    gunslinger must draw then fire their gun. The first gunslinger to fire their
     gun will win the duel, and the other gunslinger will die.
 
     Attributes
     ==========
 
-    gunslinger1:
-        One of the gunslingers engaged in the duel
-    gunslinger2:
-        The other gunslinger engaged in the duel
+    gunslingers:
+        A tuple containing the gunslingers that are taking part in the duel
     channel:
         The discord.channel.TextChannel that is being used to play the game
     ready:
@@ -163,7 +192,7 @@ class Duel:
         True if the countdown has finished, or False otherwise
     over:
         True if the duel is over, or False otherwise
-    time:
+    start_time:
         The time that the duel was created
     """
 
@@ -172,7 +201,6 @@ class Duel:
                  channel: discord.channel.TextChannel):
 
         self.gunslingers = (Gunslinger(member1), Gunslinger(member2))
-
         self.channel = channel
         self.ready = False
         self.active = False
@@ -232,8 +260,8 @@ class Duel:
         """
         Makes the gunslinger associated with 'member' fire their gun
 
-         :param member: the discord.Member object associated with the gunslinger
-                       to fire their gun
+         :param member: the discord member associated with the gunslinger to
+                        fire their gun
         """
 
         firing_gunslinger = self._get_gunslinger(member)
@@ -265,6 +293,14 @@ class Duel:
                 self.over = True
 
     def _get_killing_method(self) -> str:
+        """
+        Returns a string describing the method in which a gunslinger can be
+        killed. There are three types of methods: common, uncommon, and rare
+        methods. The killing method returned has a 60% chance of being common, a
+        30% chance of being uncommon, and a 10% chance of being rare.
+
+        :return: a method of killing a gunslinger
+        """
 
         common_methods = ["to the chest.",
                           "straight through the chest.",
@@ -300,7 +336,8 @@ class Duel:
         else:
             return rare_methods[random.randint(0, len(rare_methods) - 1)]
 
-    async def _countdown(self):
+    async def _countdown(self) -> None:
+        """Creates a countdown in the duel's text channel."""
 
         await self.channel.send("Three!")
         await asyncio.sleep(1)
@@ -312,9 +349,9 @@ class Duel:
 
     def _get_gunslinger(self, member: discord.Member) -> Gunslinger:
         """
-        Returns the gunslinger associated with 'member'.
+        Returns the gunslinger associated with the given discord member.
 
-        :param member: the discord.Member object associated with the gunslinger
+        :param member: the discord member associated with the gunslinger
                        to be retrieved
         """
 
@@ -336,9 +373,19 @@ class Duel:
                 self.gunslingers[1].get_member())
 
     def get_channel(self):
+        """
+        Returns the discord channel that this duel is taking place in.
+
+        :return: the discord channel that this duel is taking place in
+        """
         return self.channel
 
     def is_active(self):
+        """
+        Indicates whether or not this duel is active.
+
+        :return: True if this duel is active, or False otherwise
+        """
         return self.active
 
     def has_member(self, member: discord.Member):
@@ -346,10 +393,16 @@ class Duel:
 
     def is_over(self) -> bool:
         """
-        Indicates whether or not the duel is over
+        Indicates whether or not the duel is over.
+
         :return: True if the duel is over, or False otherwise.
         """
         return self.over
 
-    def get_start_time(self):
+    def get_start_time(self) -> datetime.datetime:
+        """
+        Returns the time that this duel was created.
+
+        :return: the time that this duel was created
+        """
         return self.start_time
