@@ -95,7 +95,7 @@ async def decline(ctx, challenger: discord.Member):
             await ctx.channel.send(decline_message)
             challenges.remove(challenge)
 
-    await ctx.send.channel(nonexistent_message)
+    await ctx.channel.send(nonexistent_message)
 
 @bot.command()
 async def ready(ctx):
