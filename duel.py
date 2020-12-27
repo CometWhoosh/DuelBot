@@ -215,7 +215,7 @@ class Duel:
         :param member: the discord.Member object associated with the gunslinger
                        to be readied
         """
-        gunslinger = self._get_gunslinger(member)
+        gunslinger = self.get_gunslinger(member)
         if gunslinger is not None:
             gunslinger.ready_up()
             await self._try_begin()
@@ -241,7 +241,6 @@ class Duel:
             await self._countdown()
             self.begun = True
 
-
     def draw(self, member: discord.Member) -> None:
         """
         Makes the gunslinger associated with 'member' draw their gun
@@ -250,7 +249,7 @@ class Duel:
                        to have their gun drawn
         """
 
-        gunslinger = self._get_gunslinger(member)
+        gunslinger = self.get_gunslinger(member)
 
         if gunslinger is not None and gunslinger.is_alive() and self.begun:
             gunslinger.draw()
@@ -263,7 +262,7 @@ class Duel:
                         fire their gun
         """
 
-        firing_gunslinger = self._get_gunslinger(member)
+        firing_gunslinger = self.get_gunslinger(member)
         dead_gunslinger = None
 
         if firing_gunslinger is not None and firing_gunslinger.is_alive():
@@ -345,7 +344,7 @@ class Duel:
         await asyncio.sleep(1)
         await self.channel.send("Draw!")
 
-    def _get_gunslinger(self, member: discord.Member) -> Gunslinger:
+    def get_gunslinger(self, member: discord.Member) -> Gunslinger:
         """
         Returns the gunslinger associated with the given discord member.
 

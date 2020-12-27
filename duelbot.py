@@ -174,10 +174,10 @@ async def ready(ctx: discord.ext.commands.Context) -> None:
 
         if current_duel.has_begun():
 
-            message = "Ready? **THE DUEL'S HAPPENIN' RIGHT NOW PARTNER!**"
+            message = "*Ready* !? **THE DUEL'S HAPPENIN' RIGHT NOW PARTNER!**"
             await ctx.channel.send(message)
 
-        else:
+        elif not current_duel.get_gunslinger(ctx.author).is_ready():
             await current_duel.ready_up_gunslinger(ctx.author)
 
     else:
