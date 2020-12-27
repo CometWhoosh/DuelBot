@@ -71,7 +71,8 @@ async def challenge(ctx: discord.ext.commands.Context,
     message = ("It appears " + ctx.author.display_name + " has challenged "
                + challengee.display_name + " to a good ol' fashioned duel!\n"
                + challengee.display_name + ", reply with `!duel accept " +
-               ctx.author.display_name + "` to accept the challenge.")
+               ctx.author.display_name + "` to accept the challenge, or `!duel "
+               "decline " + ctx.author.display_name + "` to decline.")
 
     await ctx.channel.send(message)
 
@@ -144,7 +145,7 @@ async def decline(ctx: discord.ext.commands.Context,
 
         return
 
-    decline_message = (challenger.display_name + " declined the offer.\n Well, "
+    decline_message = (ctx.author.display_name + " declined the offer.\n Well, "
                        "at least we won't have to deal with the mess that "
                        "comes afterwards.")
     nonexistent_message = ("Uhh... " + challenger.display_name + " never "
@@ -157,6 +158,7 @@ async def decline(ctx: discord.ext.commands.Context,
 
             await ctx.channel.send(decline_message)
             challenges.remove(challenge)
+            return
 
     await ctx.channel.send(nonexistent_message)
 
@@ -231,7 +233,7 @@ async def fire(ctx: discord.ext.commands.Context) -> None:
     if not current_duel.has_member(ctx.author):
 
         message = ("What in the hell are you thinkin'!? You ain't a part of "
-                   "this duel!")
+                   "this duel you half-wit piece of trash!")
         await ctx.channel.send(message)
         return
 

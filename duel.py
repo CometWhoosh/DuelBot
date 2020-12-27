@@ -282,7 +282,7 @@ class Duel:
                            + dead_gunslinger.get_member().display_name
                            + " with a shot " + self._get_killing_method()
                            + "\n\n Well, there you have it folks. A "
-                           "gunslinger's duel. Now, c'mon, show's over. Get on "
+                           "gunslinger's duel. Now c'mon, show's over. Get on "
                            "with your business.")
 
                 await self.channel.send(message)
