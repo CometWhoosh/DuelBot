@@ -188,7 +188,7 @@ class Duel:
         The discord.channel.TextChannel that is being used to play the game
     ready:
         True if both gunslingers are ready, or False otherwise
-    active:
+    begun:
         True if the countdown has finished, or False otherwise
     over:
         True if the duel is over, or False otherwise
@@ -203,7 +203,7 @@ class Duel:
         self.gunslingers = (Gunslinger(member1), Gunslinger(member2))
         self.channel = channel
         self.ready = False
-        self.active = False
+        self.begun = False
         self.over = False
         self.start_time = datetime.datetime.now()
 
@@ -230,7 +230,7 @@ class Duel:
 
         if (self.gunslingers[0].is_ready()
                 and self.gunslingers[1].is_ready()
-                and not self.active):
+                and not self.begun):
 
             self.ready = True
             message = "Alright everybody! It seems both parties are ready to " \
@@ -239,7 +239,7 @@ class Duel:
 
             await asyncio.sleep(3)
             await self._countdown()
-            self.active = True
+            self.begun = True
 
 
     def draw(self, member: discord.Member) -> None:
@@ -252,8 +252,7 @@ class Duel:
 
         gunslinger = self._get_gunslinger(member)
 
-        if gunslinger is not None and gunslinger.is_alive() and self.active:
-
+        if gunslinger is not None and gunslinger.is_alive() and self.begun:
             gunslinger.draw()
 
     async def fire(self, member: discord.Member) -> None:
@@ -289,7 +288,6 @@ class Duel:
 
                 await self.channel.send(message)
                 self.ready = False
-                self.active = False
                 self.over = True
 
     def _get_killing_method(self) -> str:
@@ -380,13 +378,13 @@ class Duel:
         """
         return self.channel
 
-    def is_active(self):
+    def has_begun(self):
         """
-        Indicates whether or not this duel is active.
+        Indicates whether or not this duel has begun.
 
-        :return: True if this duel is active, or False otherwise
+        :return: True if this duel has begun, or False otherwise
         """
-        return self.active
+        return self.begun
 
     def has_member(self, member: discord.Member):
         return member in self.get_members()

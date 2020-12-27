@@ -70,8 +70,8 @@ async def challenge(ctx: discord.ext.commands.Context,
 
     message = ("It appears " + ctx.author.display_name + " has challenged "
                + challengee.display_name + " to a good ol' fashioned duel!\n"
-               + challengee.display_name + ", reply with \"!duel accept " +
-               ctx.author.display_name + "\" to accept the challenge.")
+               + challengee.display_name + ", reply with `!duel accept " +
+               ctx.author.display_name + "` to accept the challenge.")
 
     await ctx.channel.send(message)
 
@@ -81,19 +81,26 @@ async def accept(ctx: discord.ext.commands.Context,
 
     global current_duel
 
-    if (current_duel is not None) and (not current_duel.has_member(ctx.author)):
+    if current_duel is not None:
 
-        message = "Quiet down! Can't you see there's a duel goin' on?"
-        await ctx.channel.send(message)
+        if current_duel.has_member(ctx.author):
+
+            message = ("Accept!? *You're already dueling " +
+                       challenger.display_name + "*!")
+            await ctx.channel.send(message)
+
+        else:
+
+            message = "Quiet down! Can't you see there's a duel goin' on?"
+            await ctx.channel.send(message)
+
         return
-
-    challenge_exists = False
 
     accept_message = ("Well alright then. A duel it is.\n\nNow here's how "
                       "this’ll work. I’m gonna countdown by sayin’ \"One! Two! "
                       "Three! Draw!\"\n\nThen, each gunslinger will draw their "
-                      "gun by writing “!duel draw”, and then fire said gun "
-                      "with \"!duel fire\". The first gunslinger to fire their "
+                      "gun by writing `!duel draw`, and then fire said gun "
+                      "with `!duel fire`. The first gunslinger to fire their "
                       "pistol will win, and the other gunslinger... well, "
                       "they'll be on their way to meet their maker. Understand?"
                       "\n\nNow, " + ctx.author.display_name + ", " +
@@ -118,14 +125,23 @@ async def accept(ctx: discord.ext.commands.Context,
 
     await ctx.channel.send(nonexistent_message)
 
+
 @bot.command()
 async def decline(ctx: discord.ext.commands.Context,
                   challenger: discord.Member) -> None:
 
     if current_duel is not None:
 
-        message = "Would you quiet down? There's a duel goin' on."
-        await ctx.channel.send(message)
+        if current_duel.has_member(ctx.author):
+
+            message = "Decline!? You're in the duel friend!"
+            await ctx.channel.send(message)
+
+        else:
+
+            message = "Would you quiet down? There's a duel goin' on."
+            await ctx.channel.send(message)
+
         return
 
     decline_message = (challenger.display_name + " declined the offer.\n Well, "
@@ -150,16 +166,25 @@ async def ready(ctx: discord.ext.commands.Context) -> None:
     if current_duel is None:
 
         message = ("Haha! I like your enthusiasm partner, but in case you "
-                   "can't see, there ain't any duels going on.")
+                   "can't see, there ain't no duel going on.")
         await ctx.channel.send(message)
         return
 
-    if not current_duel.has_member(ctx.author):
+    if current_duel.has_member(ctx.author):
+
+        if current_duel.has_begun():
+
+            message = "Ready? **THE DUEL'S HAPPENIN' RIGHT NOW PARTNER!**"
+            await ctx.channel.send(message)
+
+        else:
+            await current_duel.ready_up_gunslinger(ctx.author)
+
+    else:
+
         message = "Ready? You ain't part of this duel, friend!"
         await ctx.channel.send(message)
-        return
 
-    await current_duel.ready_up_gunslinger(ctx.author)
 
 @bot.command()
 async def draw(ctx: discord.ext.commands.Context) -> None:
@@ -173,21 +198,20 @@ async def draw(ctx: discord.ext.commands.Context) -> None:
         await ctx.channel.send(message)
         return
 
-    if (not current_duel.is_active()) \
-            and current_duel.has_member(ctx.author):
+    if current_duel.has_member(ctx.author):
 
-        message = ("Easy there, cowpoke. It ain't time for you to draw yet.")
-        await ctx.channel.send(message)
-        return
+        if current_duel.has_begun():
+            current_duel.draw(ctx.author)
+        else:
+            message = ("Easy there, cowpoke. It ain't time for you to draw "
+                       "yet.")
+            await ctx.channel.send(message)
 
-    if not current_duel.has_member(ctx.author):
+    else:
 
         message = ("Put that gun away you no good maggot! You ain't part of "
                    "this duel!")
         await ctx.channel.send(message)
-        return
-
-    current_duel.draw(ctx.author)
 
 @bot.command()
 async def fire(ctx: discord.ext.commands.Context) -> None:
@@ -197,7 +221,7 @@ async def fire(ctx: discord.ext.commands.Context) -> None:
     if current_duel is None:
         return
 
-    if (not current_duel.is_active()) \
+    if (not current_duel.has_begun()) \
             and current_duel.has_member(ctx.author):
 
         message = ("Woah there! Take it easy. It ain't time for you fire yet.")
