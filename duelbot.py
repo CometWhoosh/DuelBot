@@ -34,16 +34,31 @@ current_duel = None
 async def challenge(ctx: discord.ext.commands.Context,
                     challengee: discord.Member) -> None:
 
-    if current_duel is not None:
-
-        message = "Hold it, cowpoke. There's already a duel goin' on."
-        await ctx.channel.send(message)
-        return
-
     if challengee == ctx.author:
 
         message = ("You're challenging... yourself? You need to put down "
                    "the liquor, friend.")
+        await ctx.channel.send(message)
+        return
+
+    if challengee == bot.user:
+
+        message = ("Challenge me? Haha, that's a good joke friend.")
+        await ctx.channel.send(message)
+
+        await asyncio.sleep(5)
+
+        message = ("You listen here, pal. I know I played it off in the "
+                   "server, but lets get something straight. *You do not "
+                   "challenge me*, understand? I coordinate the duels, I do "
+                   "not participate in them. You pull somethin' like that "
+                   "again, and I'll show you what a *real* duel is like.")
+        await ctx.author.send(message)
+        return
+
+    if current_duel is not None:
+
+        message = "Hold it, cowpoke. There's already a duel goin' on."
         await ctx.channel.send(message)
         return
 
@@ -81,6 +96,14 @@ async def accept(ctx: discord.ext.commands.Context,
                  challenger: discord.Member) -> None:
 
     global current_duel
+
+    if challenger == bot.user:
+
+        message = ("Accept a duel from... me? Ha! I never challenged you, but "
+                   "if I did, believe me friend—you would not want to accept.")
+
+        await ctx.channel.send(message)
+        return
 
     if challenger == ctx.author:
 
@@ -140,10 +163,18 @@ async def accept(ctx: discord.ext.commands.Context,
 async def decline(ctx: discord.ext.commands.Context,
                   challenger: discord.Member) -> None:
 
+    if challenger == bot.user:
+
+        message = ("Well guess what—you don't need to decline friend, because "
+                   "I never challenged you.")
+
+        await ctx.channel.send(message)
+        return
+
     if challenger == ctx.author:
 
         message = ("You want to decline a challenge from... yourself? "
-                   "(*Sighs*) you're gonna make the saloon bartender quite the "
+                   "(*Sighs*) You're gonna make the saloon bartender quite the "
                    "rich man someday.")
 
         await ctx.channel.send(message)
@@ -308,7 +339,7 @@ async def check_expirations() -> None:
         else:
 
             for challenge in challenges:
-                print("AAAA")
+
                 if seconds_between(datetime.datetime.now(),
                                    challenge.get_start_time()) >= 40:
 
