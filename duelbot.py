@@ -11,7 +11,7 @@ import asyncio
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-bot = commands.Bot(command_prefix="!duel ")
+bot = commands.Bot(command_prefix="!duel ", help_command=None)
 
 duel_expiration_message = ("What the hell are you two doin'? Do you even plan "
                            "on killin' each other, or are you just gonna stand "
@@ -106,7 +106,7 @@ async def accept(ctx: discord.ext.commands.Context,
                       "they'll be on their way to meet their maker. Understand?"
                       "\n\nNow, " + ctx.author.display_name + ", " +
                       challenger.display_name +", if you will, please send the "
-                      "message \"!duel ready\" when you're ready, and the "
+                      "message `!duel ready` when you're ready, and the "
                       "countdown will begin.")
 
     nonexistent_message = ("Are you drunk, partner? " +
@@ -242,6 +242,23 @@ async def fire(ctx: discord.ext.commands.Context) -> None:
     if current_duel.is_over():
         current_duel = None
 
+@bot.command()
+async def help(ctx: discord.ext.commands.Context) -> None:
+
+    message = ("Howdy partner! I’m DuelBot, the finest duel coordinating bot "
+               "there is this side of the internet. \n\n"
+               "Now, let me explain to you how this works. Let's say you come across " 
+               "a feller—or madam, we don’t discriminate here—that you have " 
+               "somethin’ to settle with. Challenge them to a duel with the "
+               "command `!duel challenge user_name`. If they accept, then you "
+               "get to face them in one of America’s proudest and most "
+               "time-honoured traditions—a gunslinger’s duel!\n\n"
+               "If they accept the duel, I’ll be there to provide you with "
+               "further instructions. So that’s really all you need to know. "
+               "So, get your guns, strap on your holsters, and get goin’ "
+               "cowpoke!")
+
+    await ctx.channel.send(message)
 
 async def check_expirations() -> None:
 
@@ -266,7 +283,7 @@ async def check_expirations() -> None:
 
                     challenge_message = ("Well, " +
                                          challenge.get_challenger().mention +
-                                         " it seems like " +
+                                         ", it seems like " +
                                          challenge.get_challengee().display_name
                                          + " didn't respond. Sorry friend, but "
                                          "we're calling off the challenge.")
