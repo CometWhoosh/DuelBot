@@ -82,6 +82,15 @@ async def accept(ctx: discord.ext.commands.Context,
 
     global current_duel
 
+    if challenger == ctx.author:
+
+        message = ("You want to accept a challenge from... yourself? (*Sighs*) "
+                   "Alcohol seems to have its grasp quite firmly around you "
+                   "partner.")
+
+        await ctx.channel.send(message)
+        return
+
     if current_duel is not None:
 
         if current_duel.has_member(ctx.author):
@@ -130,6 +139,15 @@ async def accept(ctx: discord.ext.commands.Context,
 @bot.command()
 async def decline(ctx: discord.ext.commands.Context,
                   challenger: discord.Member) -> None:
+
+    if challenger == ctx.author:
+
+        message = ("You want to decline a challenge from... yourself? "
+                   "(*Sighs*) you're gonna make the saloon bartender quite the "
+                   "rich man someday.")
+
+        await ctx.channel.send(message)
+        return
 
     if current_duel is not None:
 
@@ -247,18 +265,18 @@ async def help(ctx: discord.ext.commands.Context) -> None:
 
     message = ("Howdy partner! I’m DuelBot, the finest duel coordinating bot "
                "there is this side of the internet. \n\n"
-               "Now, let me explain to you how this works. Let's say you come across " 
-               "a feller—or madam, we don’t discriminate here—that you have " 
-               "somethin’ to settle with. Challenge them to a duel with the "
-               "command `!duel challenge user_name`. If they accept, then you "
-               "get to face them in one of America’s proudest and most "
-               "time-honoured traditions—a gunslinger’s duel!\n\n"
+               "Now let me explain to you how this works. Let's say you come "
+               "across someone that you have somethin’ to settle with. "
+               "Go ahead and challenge them to a duel with the command `!duel "
+               "challenge user_name`. If they accept, then you get to face "
+               "them in one of America’s proudest and most time-honoured "
+               "traditions—a gunslinger’s duel!\n\n"
                "If they accept the duel, I’ll be there to provide you with "
                "further instructions. So that’s really all you need to know. "
                "So, get your guns, strap on your holsters, and get goin’ "
                "cowpoke!\n\n"
-               "My profile picture was created by none other than the "
-               "fine people at Freepik: "
+               "Note: my profile picture was created by none other than the "
+               "fine folks at Freepik: "
                "<https://www.flaticon.com/authors/freepik>")
 
     await ctx.channel.send(message)
