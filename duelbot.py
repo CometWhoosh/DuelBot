@@ -339,7 +339,7 @@ async def check_expirations() -> None:
         else:
 
             for challenge in challenges:
-                
+
                 if seconds_between(datetime.datetime.now(),
                                    challenge.get_start_time()) >= 40:
 
