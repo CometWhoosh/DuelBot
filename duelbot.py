@@ -256,9 +256,22 @@ async def help(ctx: discord.ext.commands.Context) -> None:
                "If they accept the duel, I’ll be there to provide you with "
                "further instructions. So that’s really all you need to know. "
                "So, get your guns, strap on your holsters, and get goin’ "
-               "cowpoke!")
+               "cowpoke!\n\n"
+               "My profile picture was created by none other than the "
+               "fine people at Freepik: "
+               "<https://www.flaticon.com/authors/freepik>")
 
     await ctx.channel.send(message)
+
+@bot.event
+async def on_command_error(ctx: discord.ext.commands.Context,
+                           error: discord.ext.commands.CommandError) -> None:
+
+    if isinstance(error, discord.ext.commands.CommandNotFound):
+
+        message = ("I don't reckon that's a valid command, partner. Send the "
+                   "message `!duel help` to get some assistance.")
+        await ctx.channel.send(message)
 
 async def check_expirations() -> None:
 
