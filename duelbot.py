@@ -36,14 +36,14 @@ async def challenge(ctx: discord.ext.commands.Context,
 
     if challengee == ctx.author:
 
-        message = ("You're challenging... yourself? You need to put down "
-                   "the liquor, friend.")
+        message = ("You're challenging... yourself? You need to put down the "
+                   "liquor, friend.")
         await ctx.channel.send(message)
         return
 
     if challengee == bot.user:
 
-        message = ("Challenge me? Haha, that's a good joke friend.")
+        message = "Challenge me? Haha, that's a good joke friend."
         await ctx.channel.send(message)
 
         await asyncio.sleep(5)
@@ -83,9 +83,9 @@ async def challenge(ctx: discord.ext.commands.Context,
 
     challenges.append(Challenge(ctx.author, challengee, ctx.channel))
 
-    message = ("It appears " + ctx.author.display_name + " has challenged "
-               + challengee.display_name + " to a good ol' fashioned duel!\n"
-               + challengee.display_name + ", reply with `!duel accept " +
+    message = ("It appears " + ctx.author.display_name + " has challenged " +
+               challengee.display_name + " to a good ol' fashioned duel!\n" +
+               challengee.display_name + ", reply with `!duel accept " +
                ctx.author.display_name + "` to accept the challenge, or `!duel "
                "decline " + ctx.author.display_name + "` to decline.")
 
@@ -137,8 +137,8 @@ async def accept(ctx: discord.ext.commands.Context,
                       "pistol will win, and the other gunslinger... well, "
                       "they'll be on their way to meet their maker. Understand?"
                       "\n\nNow, " + ctx.author.display_name + ", " +
-                      challenger.display_name +", if you will, please send the "
-                      "message `!duel ready` when you're ready, and the "
+                      challenger.display_name + ", if you will, please send "
+                      "the message `!duel ready` when you're ready, and the "
                       "countdown will begin.")
 
     nonexistent_message = ("Are you drunk, partner? " +
@@ -275,7 +275,7 @@ async def fire(ctx: discord.ext.commands.Context) -> None:
     if (not current_duel.has_begun()) \
             and current_duel.has_member(ctx.author):
 
-        message = ("Woah there! Take it easy. It ain't time for you fire yet.")
+        message = "Woah there! Take it easy. It ain't time for you fire yet."
         await ctx.channel.send(message)
         return
 
@@ -346,8 +346,8 @@ async def check_expirations() -> None:
                     challenge_message = ("Well, " +
                                          challenge.get_challenger().mention +
                                          ", it seems like " +
-                                         challenge.get_challengee().display_name
-                                         + " didn't respond. Sorry friend, but "
+                                         challenge.get_challengee().display_name +
+                                         " didn't respond. Sorry friend, but "
                                          "we're calling off the challenge.")
 
                     await challenge.get_channel().send(challenge_message)
