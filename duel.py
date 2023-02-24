@@ -270,3 +270,5 @@ class Duel:
         :return: the time that this duel was created
         """
         return self.start_time
+
+# Test 2
